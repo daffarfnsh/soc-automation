@@ -1,0 +1,53 @@
+TheHive 5 Config
+
+nano /etc/cassandra/cassandra.yaml
+
+Change these following lines suited to your preference and/or VM IP
+
+cluster_name: 'Test Cluster' # Change according to preference
+listen_address: localhost # Change to thehive IP
+rpc_address: localhost # Change to thehive IP
+seeds: "127.0.0.1:7000" # Change to thehive IP
+
+systemctl stop cassandra.service
+rm -rf /var/lib/cassandra.service
+systemctl start cassandra.service
+
+nano /etc/elasticsearch/elasticsearch.yml
+
+Change these following lines suited to your preference and/or VM IP
+
+cluster_name: 'Test Cluster' # Change according to preference
+network.host: 192.168.0.1 # Change to thehive IP and uncomment
+cluster.initial_master_nodes: ["node-1"] # Uncomment and delete "node-2"
+
+systemctl start elasticsearch
+systemctl enable elasticsearch
+
+chown -R thehive:thehive /opt/thp
+
+nano /etc/thehive/application.conf
+
+Change these following lines suited to your preference and/or VM IP
+
+db.janusgraph{
+	hostname = [127.0.0.1] # Change to thehive IP
+	cql{
+		cluster-name = thp # Change according to previous cluster-name
+	}
+	index.search{
+		hostname = ["127.0.0.1"] # Change to thehive IP
+	}
+}
+application.baseUrl  "https://localhost:9000" # Change to thehive IP
+
+systemctl start thehive
+systemctl enable thehive
+
+Create a jvm.options file under /etc/elasticsearch/jvm.options.d and put the following configurations in that file.
+
+nano /etc/elasticsearch/jvm.options.d/jvm.options
+
+-Dlog4j2.formatMsgNoLookups=true
+-Xms2g
+-Xmx2g

@@ -1,0 +1,27 @@
+Create ossec.conf backup
+
+cp /var/ossec/etc/ossec.conf ~/ossec-backup.conf
+
+nano /var/ossec/etc/ossec.conf
+
+Change logall from no to yes
+
+<logall>yes</logall>
+<logall/json>yes</logall_json>
+
+systemctl restart wazuh-manager.service
+
+nano /etc/filebeat/filebeat.yml
+
+Change archives: enabled: from false to true
+
+archives:
+	enabled: true
+
+systemctl restart filebeat
+
+<integration>
+  <name>shuffle</name>
+  <hook_url>>https://shuffler.io/api/v1/hooks/webhook_b0bc7043-d245-4a8a-8f5a-b1c66d8ce2bb </hook_url>                    <level>3</level>
+  <rule_id>json</alert_formatrule_id>
+</integration>
